@@ -7,10 +7,12 @@ class Settings {
     this._compact = false;
     this._small = false;
     this._parseProfit = false;
+    this._optimizeGunbot = false;
     this._outputIntervalDelaySeconds = 60;
     this._showAllErrors = false;
     this._numberOfDigits = 4;
     this._hideInactiveAfterHours = 720;
+    this._btcLimit = 0.01;
     this.newLine = '\n';
     this.marketPrefixs = ['poloniex', 'kraken', 'bittrex'];
     this.logFileLinesToRead = 55;
@@ -117,6 +119,21 @@ class Settings {
     return this._hideInactiveAfterHours;
   }
 
+  get btcLimit() {
+    return this._btcLimit;
+  }
+
+  set btcLimit(value) {
+    this._btcLimit = value;
+  }
+
+  get optimizeGunbot() {
+    return this._optimizeGunbot;
+  }
+
+  set optimizeGunbot(value) {
+    this._optimizeGunbot = value;
+  }
 }
 
 module.exports = new Settings();

@@ -6,6 +6,7 @@ const tradePairParser = require('./tradePairParser');
 const formatter = require('./formatter');
 const pm2Data = require('./pm2Data');
 const settings = require('./settings');
+const exec = require('child_process').exec;
 
 class TableData {
 
@@ -139,6 +140,18 @@ class TableData {
                 latestAvailableBitCoinsDate = data.availableBitCoinsTimeStamp;
               }
             }
+
+            if(settings.optimizeGunbot === true && pm2Result[data.tradePair].status == "online" && data.availableBitCoins < settings.btcLimit)
+            {
+              exec('pm2 stop '+data.tradePair);
+            }
+
+            if(settings.optimizeGunbot === true && pm2Result[data.tradePair].status == "stopped" && data.availableBitCoins >= settings.btcLimit)
+            {
+              exec('pm2 start '+data.tradePair);
+            }
+
+            
 
             if (!isNaN(parseFloat(formatter.btcValue(data.coins, data.lastPriceInBTC)))) {
               totalBTCValue += parseFloat(formatter.btcValue(data.coins, data.lastPriceInBTC));
