@@ -142,7 +142,7 @@ class TableData {
 
             if(settings.optimizeGunbot === true && pm2Result[data.tradePair].status == "stopped" && availableBitCoins >= settings.btcLimit)
             {
-              setTimeout((){ exec('pm2 start '+data.tradePair) }, 20*1000);
+              setTimeout(function(){ exec('pm2 start '+data.tradePair) }, 20*1000);
             }
 
             // Hides inactive pairs.
