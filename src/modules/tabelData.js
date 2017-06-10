@@ -158,7 +158,7 @@ class TableData {
               (data.boughtPrice === undefined || parseFloat(data.boughtPrice) === 0 )&&
               availableBitCoins < settings.btcLimit)
             {
-              exec('pm2 stop '+data.tradePair);
+              setTimeout(function(){ exec('pm2 stop '+data.tradePair) }, 20*1000);
             }
             
 
