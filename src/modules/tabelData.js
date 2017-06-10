@@ -155,8 +155,7 @@ class TableData {
             
             if(settings.optimizeGunbot === true && 
               pm2Result[data.tradePair].status == "online" && 
-              data.boughtPrice === undefined &&
-              parseFloat(data.boughtPrice) === 0 &&
+              (data.boughtPrice === undefined || parseFloat(data.boughtPrice) === 0 )&&
               availableBitCoins < settings.btcLimit)
             {
               exec('pm2 stop '+data.tradePair);
