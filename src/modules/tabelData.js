@@ -120,15 +120,7 @@ class TableData {
               continue;
             }
 
-            // Hides inactive pairs.
-            let inactiveFilterTimestamp = Math.round(new Date().getTime() / 1000) - (settings.hideInactiveAfterHours * 60 * 60);
-            let lastLogTimestamp = Math.round(new Date(data.lastTimeStamp).getTime() / 1000);
-
-            if (inactiveFilterTimestamp > lastLogTimestamp) {
-              continue;
-            }
-
-            // Get amount of available bitcoins
+             // Get amount of available bitcoins
             // TODO: by market
             if (data.availableBitCoins !== undefined && data.availableBitCoins.length > 0) {
               if (!(data.availableBitCoinsTimeStamp instanceof Date)) {
@@ -140,20 +132,35 @@ class TableData {
                 latestAvailableBitCoinsDate = data.availableBitCoinsTimeStamp;
               }
             }
-            
-            if(settings.optimizeGunbot === true && 
-              pm2Result[data.tradePair].status == "online" && 
-              data.boughtPrice === undefined &&
-              availableBitCoins < settings.btcLimit)
-            {
-              exec('pm2 stop '+data.tradePair);
+
+          }
+
+          for (let data of values) {
+            if (data === undefined ) {
+              continue;
             }
 
             if(settings.optimizeGunbot === true && pm2Result[data.tradePair].status == "stopped" && availableBitCoins >= settings.btcLimit)
             {
-              exec('pm2 start '+data.tradePair);
+              setTimeout((){ exec('pm2 start '+data.tradePair) }, 20*1000);
             }
 
+            // Hides inactive pairs.
+            let inactiveFilterTimestamp = Math.round(new Date().getTime() / 1000) - (settings.hideInactiveAfterHours * 60 * 60);
+            let lastLogTimestamp = Math.round(new Date(data.lastTimeStamp).getTime() / 1000);
+
+            if (inactiveFilterTimestamp > lastLogTimestamp) {
+              continue;
+            }
+            
+            if(settings.optimizeGunbot === true && 
+              pm2Result[data.tradePair].status == "online" && 
+              data.boughtPrice === undefined &&
+              parseFloat(data.boughtPrice) === 0 &&
+              availableBitCoins < settings.btcLimit)
+            {
+              exec('pm2 stop '+data.tradePair);
+            }
             
 
             if (!isNaN(parseFloat(formatter.btcValue(data.coins, data.lastPriceInBTC)))) {
