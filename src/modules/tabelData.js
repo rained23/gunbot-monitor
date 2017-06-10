@@ -141,7 +141,10 @@ class TableData {
               }
             }
 
-            if(settings.optimizeGunbot === true && pm2Result[data.tradePair].status == "online" && data.availableBitCoins < settings.btcLimit)
+            if(settings.optimizeGunbot === true && 
+              pm2Result[data.tradePair].status == "online" && 
+              data.boughtPrice === undefined &&
+              data.availableBitCoins < settings.btcLimit)
             {
               exec('pm2 stop '+data.tradePair);
             }
