@@ -140,7 +140,10 @@ class TableData {
               continue;
             }
 
-            if(settings.optimizeGunbot === true && pm2Result[data.tradePair].status == "stopped" && availableBitCoins >= settings.btcLimit)
+            if(settings.optimizeGunbot === true && 
+              pm2Result[data.tradePair].status == "stopped" && 
+              (data.boughtPrice !== undefined || parseFloat(data.boughtPrice) !== 0 ) &&
+              availableBitCoins >= settings.btcLimit)
             {
               setTimeout(function(){ exec('pm2 start '+data.tradePair) }, 20*1000);
             }
