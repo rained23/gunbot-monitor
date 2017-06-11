@@ -142,12 +142,20 @@ class TableData {
 
             if(settings.optimizeGunbot === true && 
               pm2Result[data.tradePair].status == "stopped" && 
-              (data.boughtPrice !== undefined || parseFloat(data.boughtPrice) !== 0 ) &&
+              (data.coins !== undefined || parseFloat(data.coins) !== 0) &&
               availableBitCoins >= settings.btcLimit)
             {
-              setTimeout(function(){ exec('pm2 start '+data.tradePair) }, 20*1000);
+              setTimeout(function(){ exec('pm2 start '+data.tradePair) }, 25*1000);
             }
 
+            if(settings.optimizeGunbot === true && 
+              pm2Result[data.tradePair].status == "online" && 
+              (data.coins === undefined || parseFloat(data.coins) === 0) &&
+              availableBitCoins < settings.btcLimit)
+            {
+              setTimeout(function(){ exec('pm2 stop '+data.tradePair) }, 25*1000);
+            }
+            
             // Hides inactive pairs.
             let inactiveFilterTimestamp = Math.round(new Date().getTime() / 1000) - (settings.hideInactiveAfterHours * 60 * 60);
             let lastLogTimestamp = Math.round(new Date(data.lastTimeStamp).getTime() / 1000);
@@ -156,13 +164,6 @@ class TableData {
               continue;
             }
             
-            if(settings.optimizeGunbot === true && 
-              pm2Result[data.tradePair].status == "online" && 
-              (data.boughtPrice === undefined || parseFloat(data.boughtPrice) === 0 )&&
-              availableBitCoins < settings.btcLimit)
-            {
-              setTimeout(function(){ exec('pm2 stop '+data.tradePair) }, 20*1000);
-            }
             
 
             if (!isNaN(parseFloat(formatter.btcValue(data.coins, data.lastPriceInBTC)))) {
