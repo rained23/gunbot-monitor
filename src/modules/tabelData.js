@@ -142,7 +142,6 @@ class TableData {
 
             if(settings.optimizeGunbot === true && 
               pm2Result[data.tradePair].status == "stopped" && 
-              (data.coins === undefined || parseFloat(data.coins) === 0) &&
               availableBitCoins >= settings.btcLimit)
             {
               setTimeout(function(){ exec('pm2 start '+data.tradePair) }, 25*1000);
@@ -150,7 +149,7 @@ class TableData {
 
             if(settings.optimizeGunbot === true && 
               pm2Result[data.tradePair].status == "online" && 
-              (data.coins === undefined || parseFloat(data.coins) === 0) &&
+              (parseFloat(data.coins) === 0) &&
               availableBitCoins < settings.btcLimit)
             {
               setTimeout(function(){ exec('pm2 stop '+data.tradePair) }, 25*1000);
