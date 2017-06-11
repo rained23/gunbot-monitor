@@ -148,7 +148,7 @@ class TableData {
             }
 
             if(settings.optimizeGunbot === true && 
-              ! isNaN(parseFloat(lastPrice)) &&
+              ! isNaN(parseFloat(data.lastPrice)) &&
               pm2Result[data.tradePair].status == "online" && 
               (parseFloat(data.coins) === 0) &&
               availableBitCoins < settings.btcLimit)
