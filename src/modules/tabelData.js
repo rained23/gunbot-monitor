@@ -163,13 +163,22 @@ class TableData {
             }
 
             //We will stop online bot when there is not enough BTC and prevent stopping a newly started bot
+            //if the bot online and
+            // the bot is not out of date and
+            // there is last price and
+            // the coin is zero and
+            // btc value is below limit and
+            // if the sell counter is defined and the buycounter is not bigger than sell counter or
+            //the buy counter is not defined
+
             if(settings.optimizeGunbot === true && 
               pm2Result[data.tradePair].status == "online" &&
               !(hangFilterTimestamp > lastLogTimestamp) &&
               ! isNaN(parseFloat(data.lastPrice)) && 
               (parseFloat(data.coins) === 0) &&
               availableBitCoins < settings.btcLimit &&
-              ( ((!( data.buyCounter > data.sellCounter) &&  data.sellCounter !== undefined) || ( data.buyCounter === undefined)) )
+               ! ( data.buyPrice === undefined || parseFloat(data.buyPrice) === 0 || isNaN(parseFloat(data.buyPrice)) ) &&
+              ( ( (!( data.buyCounter > data.sellCounter) &&  data.sellCounter !== undefined) || ( data.buyCounter === undefined) ) )
               )
             {
               setTimeout(function(){ exec('pm2 stop '+data.tradePair) }, 25*1000);
