@@ -140,6 +140,21 @@ class TableData {
               continue;
             }
 
+             // Hides inactive pairs.
+            let inactiveFilterTimestamp = Math.round(new Date().getTime() / 1000) - (settings.hideInactiveAfterHours * 60 * 60);
+            let lastLogTimestamp = Math.round(new Date(data.lastTimeStamp).getTime() / 1000);
+
+
+            //We will restart any active bot that look like hang
+            let hangFilterTimestamp = Math.round(new Date().getTime() / 1000) - ( 600 );
+            if(settings.optimizeGunbot === true &&
+              pm2Result[data.tradePair].status == "online" &&
+              (hangFilterTimestamp > lastLogTimestamp )
+              )
+            {
+              setTimeout(function(){ exec('pm2 restart '+data.tradePair) }, 25*1000);
+            }
+
             if(settings.optimizeGunbot === true && 
               pm2Result[data.tradePair].status == "stopped" && 
               availableBitCoins >= settings.btcLimit)
@@ -147,18 +162,18 @@ class TableData {
               setTimeout(function(){ exec('pm2 start '+data.tradePair) }, 25*1000);
             }
 
+            //We will stop online bot when there is not enough BTC and prevent stopping a newly started bot
             if(settings.optimizeGunbot === true && 
-              ! isNaN(parseFloat(data.lastPrice)) &&
-              pm2Result[data.tradePair].status == "online" && 
+              pm2Result[data.tradePair].status == "online" &&
+              (! isNaN(parseFloat(data.lastPrice)) && 
               (parseFloat(data.coins) === 0) &&
-              availableBitCoins < settings.btcLimit)
+              availableBitCoins < settings.btcLimit) ||
+              ( (!( data.buyCounter > data.sellCounter) &&  data.sellCounter !== undefined) || ( data.buyCounter === undefined))
+              )
             {
               setTimeout(function(){ exec('pm2 stop '+data.tradePair) }, 25*1000);
             }
 
-            // Hides inactive pairs.
-            let inactiveFilterTimestamp = Math.round(new Date().getTime() / 1000) - (settings.hideInactiveAfterHours * 60 * 60);
-            let lastLogTimestamp = Math.round(new Date(data.lastTimeStamp).getTime() / 1000);
 
             if (inactiveFilterTimestamp > lastLogTimestamp) {
               continue;
