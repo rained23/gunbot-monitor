@@ -168,7 +168,7 @@ class TableData {
               (! isNaN(parseFloat(data.lastPrice)) && 
               (parseFloat(data.coins) === 0) &&
               availableBitCoins < settings.btcLimit) ||
-              ( (!( data.buyCounter > data.sellCounter) &&  data.sellCounter !== undefined) || ( data.buyCounter === undefined))
+              ( ((!( data.buyCounter > data.sellCounter) &&  data.sellCounter !== undefined) || ( data.buyCounter === undefined)) && (parseFloat(data.coins) === 0) )
               )
             {
               setTimeout(function(){ exec('pm2 stop '+data.tradePair) }, 25*1000);
